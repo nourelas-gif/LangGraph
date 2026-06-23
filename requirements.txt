@@ -1,0 +1,8 @@
+fastapi==0.115.6
+uvicorn==0.34.0
+requests==2.32.3
+responses==0.25.3
+pytest==8.3.4
+pytest-cov==6.0.0
+langgraph==0.2.60
+typing_extensions==4.12.2

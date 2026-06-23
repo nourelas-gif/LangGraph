@@ -1,0 +1,86 @@
+{
+  "name": "S5_J22_Robust_Wikipedia_DLQ_LangGraph",
+  "description": "Workflow Agentic AI robuste : Chat Input -> Prompt -> Wikipedia API -> Smart Router -> Standard Output ou DLQ POST.",
+  "nodes": [
+    {
+      "id": "chat_input",
+      "type": "Chat Input",
+      "output": "message"
+    },
+    {
+      "id": "prompt_node",
+      "type": "Prompt Node",
+      "input": "message",
+      "output": "prompt"
+    },
+    {
+      "id": "wikipedia_api_tool",
+      "type": "Wikipedia API Tool",
+      "input": "prompt",
+      "output": "wiki_result"
+    },
+    {
+      "id": "smart_router",
+      "type": "Smart Router",
+      "input": "wiki_result",
+      "outputs": [
+        "standard_success",
+        "dlq_failure"
+      ]
+    },
+    {
+      "id": "standard_llm_answer",
+      "type": "LLM / Controlled Answer",
+      "input": "standard_success",
+      "output": "answer"
+    },
+    {
+      "id": "api_request_dlq",
+      "type": "API Request Node",
+      "method": "POST",
+      "input": "dlq_failure",
+      "output": "dlq_status"
+    },
+    {
+      "id": "chat_output",
+      "type": "Chat Output",
+      "input": "answer"
+    }
+  ],
+  "edges": [
+    [
+      "chat_input",
+      "prompt_node"
+    ],
+    [
+      "prompt_node",
+      "wikipedia_api_tool"
+    ],
+    [
+      "wikipedia_api_tool",
+      "smart_router"
+    ],
+    [
+      "smart_router.standard_success",
+      "standard_llm_answer"
+    ],
+    [
+      "standard_llm_answer",
+      "chat_output"
+    ],
+    [
+      "smart_router.dlq_failure",
+      "api_request_dlq"
+    ],
+    [
+      "api_request_dlq",
+      "chat_output"
+    ]
+  ],
+  "implementation_files": {
+    "langgraph": "src/agent_graph.py",
+    "api": "app.py",
+    "tests": "tests/test_agent.py",
+    "ci": ".github/workflows/ci-agent.yml"
+  }
+}
