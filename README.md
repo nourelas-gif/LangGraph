@@ -1,3 +1,5 @@
+![Agentic AI Tests](https://github.com/nourelas-gif/LangGraph/actions/workflows/ci-agent.yml/badge.svg)
+
 # LAB22 - Agentic AI Robust Wikipedia Agent
 
 ## Objectif
